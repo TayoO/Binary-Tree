@@ -80,83 +80,105 @@ public class BinarySearchTree< E extends Comparable<E>> {
         }
     }
     
-    private void visit( Node<E> current ) {
-    	System.out.println( " " + current.value );
-    }
-    
     //Implementing the count method  
     
-    //Search
-    public boolean search(E toSearch){
-       return search(root, toSearch);
-    }
-    private boolean search(Node<E> p, E toSearch){
-       if (p == null) {
-          return false;
-       } else if (compareTo(toSearch, p.data) == 0) {
-       	return true;
-       } else if (compareTo(toSearch, p.data) < 0) {
-          return search(p.left, toSearch);
-       } else {
-          return search(p.right, toSearch);
-       }
+    
+    //contains method
+    private boolean contains(E obj) {
+    	boolean found = false;
+    	Node<E> current = root;
+    	while (!found && current != null) {
+    		int test = obj.compareTo(current.value);
+    		if (test == 0) {
+    			found = true;
+    		} else if (test < 0) {
+    			current = current.left;
+    		} else {
+    			current = current.right;
+    		}
+    	}
+    	return found;
     }
     
-    
-    //preOrderTransversal
-    public void preOrderTraversal() {
-       preOrderHelper(root);
-    }
-    private void preOrderHelper(Node r) {
-       if (r != null) {
-          System.out.print(r+" ");
-          preOrderHelper(r.left);
-          preOrderHelper(r.right);
-       }
-    }
-
-    public void inOrderTraversal() {
-       inOrderHelper(root);
-    }
-    private void inOrderHelper(Node r) {
-       if (r != null) {
-          inOrderHelper(r.left);
-          System.out.print(r+" ");
-          inOrderHelper(r.right);
-       }
+    //Traversing the tree
+    private void visit(Node<E> current) {
+    	System.out.print(" " + current.value);
     }
     
-    BinarySearchTree<Integer> bst;
+    //preOrder
+    public void preOrder() {
+    	preOrder(root);
+    }
+    private void preOrder(Node<E> current) {
+    	if (current != null) {
+    		visit(current);
+    		preOrder(current.left);
+    		preOrder(current.right);
+    	}
+    }
+    
+    //inOrder
+    public void inOrder() {
+    	inOrder(root);
+    }
+    private void inOrder(Node<E> current) {
+    	if (current != null) {
+    		inOrder(current.left);
+    		visit(current);
+    		inOrder(current.right);
+    	}
+    }
+    
+    //postOrder
+    public void postOrder() {
+    	postOrder(root);
+    }
+    private void postOrder( Node<E> current) {
+    	if (current != null) {
+    		postOrder(current.left);
+    		postOrder(current.right);
+    		visit(current);
+    	}
+    }
  
     //count method
-    public int count(E low, E high) {
-    	return counter(root, E low, E high);
-    }
-    
-    public int counter(E low,E high) {
-    	int count = 0;
-    	Node<E> current = root;
-    	
-    	
-    	
-    	//counting low values
-    	int testl = low.compareTo(current.value);
-    	
-    	//counting high values
-    	int testh = high.compareTo(current.value);
-    	
-    	if (testh != 0) {
-    		if (testh > 0) {
-    			while (current.value != root) {
-    				if (current.right != null) {
-    					count++;
-    					visit(current.right);
-    				}
-    				bst.preOrderTraversal();
-    			}
-    			//System.out.println(root);
-    		}
-    	}    	
-    	return count;
-    }        
+
+   int count(E low, E high) {
+	   int total = 0;
+	   Node<E> current = root;
+	   boolean tooLow = low.compareTo(current.value) >= 0;
+	   boolean tooHigh = high.compareTo(current.value) <= 0;
+	   
+	   if (!tooLow) {
+		   total = total + count(current.left, low, high, 0);
+	   }
+	   if (!tooHigh) {
+		   total = total +(count(current.right, low, high, 0));
+	   }
+	   if (!tooHigh && !tooLow) {
+		   return total + 1;
+	   } else {
+		   return total;
+	   }
+   }
+   
+   private int count(Node<E> current, E low, E high, int counter) {
+	   boolean tooLow = low.compareTo(current.value) >= 0;
+	   boolean tooHigh = high.compareTo(current.value) <= 0;
+	   if (!tooHigh && !tooLow) {
+		   counter++;
+	   }
+	   if (!tooLow) {
+			   current = current.left;
+			   counter++;
+			   counter = count(current, low, high, counter);
+	   }
+	   if (!tooHigh) {
+			   current = current.right;
+			   counter++;
+			   counter = count(current, low, high, counter);
+	   }
+	return counter;
+	   
+   } 
 }
