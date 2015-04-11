@@ -163,20 +163,22 @@ public class BinarySearchTree< E extends Comparable<E>> {
    }
    
    private int count(Node<E> current, E low, E high, int counter) {
-	   boolean tooLow = low.compareTo(current.value) >= 0;
-	   boolean tooHigh = high.compareTo(current.value) <= 0;
-	   if (!tooHigh && !tooLow) {
+	   if ((low.compareTo(current.value) <= 0) && high.compareTo(current.value) >= 0 ) {
 		   counter++;
 	   }
-	   if (!tooLow) {
+	   if (low.compareTo(current.value) <= 0)   {
+			   if (current.left!=null)
+			   {
 			   current = current.left;
-			   counter++;
 			   counter = count(current, low, high, counter);
+			   }
 	   }
-	   if (!tooHigh) {
+	   if (high.compareTo(current.value) >= 0 ){
+			   if (current.right!=null)
+			   {
 			   current = current.right;
-			   counter++;
 			   counter = count(current, low, high, counter);
+			   }
 	   }
 	return counter;
 	   
